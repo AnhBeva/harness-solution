@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cẩm Nang Harness Engineering & AI Agents</title>
+    <!-- SF Pro Font or Inter from Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Mermaid.js to render the diagram -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose',
+            themeVariables: {
+                primaryColor: '#e1f5fe',
+                edgeLabelBackground: '#ffffff',
+                lineColor: '#0066cc'
+            }
+        });
+    </script>
+    <style>
+        :root {
+            --bg-color: #f5f5f7;
+            --card-bg: #ffffff;
+            --text-main: #1d1d1f;
+            --text-secondary: #86868b;
+            --accent-blue: #0066cc;
+            --border-color: #d2d2d7;
+            --sidebar-width: 280px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: var(--text-main);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Sidebar Navigation */
+        aside {
+            width: var(--sidebar-width);
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            padding: 2.5rem 1.5rem;
+            box-sizing: border-box;
+            overflow-y: auto;
+            z-index: 10;
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--text-main);
+            margin-bottom: 2.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: -0.02em;
+        }
+
+        .logo-icon {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #0066cc, #54a0ff);
+            border-radius: 6px;
+            box-shadow: 0 2px 10px rgba(0, 102, 204, 0.2);
+        }
+
+        aside ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        aside li {
+            margin-bottom: 0.5rem;
+        }
+
+        aside a {
+            color: #424245;
+            text-decoration: none;
+            font-size: 0.95rem;
+            display: block;
+            padding: 0.6rem 0.8rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        aside a:hover {
+            background-color: rgba(0, 102, 204, 0.08);
+            color: var(--accent-blue);
+        }
+
+        aside a.active {
+            background-color: var(--accent-blue);
+            color: white;
+            font-weight: 500;
+        }
+
+        /* Main Content Container */
+        main {
+            margin-left: var(--sidebar-width);
+            flex-grow: 1;
+            padding: 3rem 4rem;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+        }
+
+        article {
+            max-width: 800px;
+            width: 100%;
+            background-color: var(--card-bg);
+            padding: 4rem 5rem;
+            border-radius: 20px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.015);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            box-sizing: border-box;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 2.6rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-top: 0;
+            margin-bottom: 2rem;
+            line-height: 1.15;
+            background: linear-gradient(135deg, #1d1d1f 30%, #515154 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-top: 3.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e5e5ea;
+            color: var(--text-main);
+        }
+
+        h3 {
+            font-size: 1.35rem;
+            font-weight: 600;
+            margin-top: 2.2rem;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+        }
+
+        p {
+            font-size: 1.05rem;
+            line-height: 1.625;
+            margin-bottom: 1.5rem;
+            color: #3a3a3c;
+        }
+
+        a {
+            color: var(--accent-blue);
+            text-decoration: none;
+            transition: opacity 0.2s ease;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        ul, ol {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+        }
+
+        li {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+            color: #3a3a3c;
+        }
+
+        /* Code and Preformatted */
+        pre {
+            background-color: #f5f5f7;
+            padding: 1.2rem;
+            border-radius: 12px;
+            overflow-x: auto;
+            border: 1px solid #e5e5ea;
+            margin: 1.5rem 0;
+        }
+
+        code {
+            font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, Courier, monospace;
+            font-size: 0.9rem;
+            background-color: #f5f5f7;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            color: #bf4080;
+        }
+
+        pre code {
+            padding: 0;
+            background-color: transparent;
+            color: inherit;
+            font-size: 0.85rem;
+        }
+
+        /* Blockquotes */
+        blockquote {
+            margin: 2rem 0;
+            padding: 1rem 1.5rem;
+            border-left: 4px solid var(--accent-blue);
+            background-color: rgba(0, 102, 204, 0.03);
+            border-radius: 0 12px 12px 0;
+        }
+
+        blockquote p {
+            margin: 0;
+            font-style: italic;
+            color: #1d1d1f;
+        }
+
+        /* Divider */
+        hr {
+            border: 0;
+            height: 1px;
+            background: #e5e5ea;
+            margin: 3.5rem 0;
+        }
+
+        /* Mermaid diagram wrapper */
+        .mermaid {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid #e5e5ea;
+            margin: 2rem 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Image styling */
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            margin: 2rem 0;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.04);
+            border: 1px solid #e5e5ea;
+        }
+
+        /* Task List styling */
+        ul li input[type="checkbox"] {
+            margin-right: 0.5rem;
+            accent-color: var(--accent-blue);
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid #e5e5ea;
+            font-size: 0.95rem;
+        }
+
+        th {
+            font-weight: 600;
+            background-color: #f5f5f7;
+            color: var(--text-main);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            body {
+                flex-direction: column;
+            }
+            aside {
+                width: 100%;
+                position: relative;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                padding: 1.5rem;
+            }
+            .logo {
+                margin-bottom: 1rem;
+            }
+            aside ul {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+            aside li {
+                margin-bottom: 0;
+            }
+            aside a {
+                padding: 0.4rem 0.6rem;
+            }
+            main {
+                margin-left: 0;
+                padding: 2rem 1.5rem;
+            }
+            article {
+                padding: 2.5rem 2rem;
+                border-radius: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <aside>
+        <div class="logo">
+            <div class="logo-icon"></div>
+            <span>Harness Manual</span>
+        </div>
+        <ul>
+            <li><a href="#mindset-shift" class="active">Mindset Shift</a></li>
+            <li><a href="#chuong-1">Chương 1: Case Architecture</a></li>
+            <li><a href="#chuong-2">Chương 2: Evidence Verification</a></li>
+            <li><a href="#chuong-3">Chương 3: Gotchas Curation</a></li>
+            <li><a href="#chuong-4">Chương 4: Retro & Memory</a></li>
+            <li><a href="#chuong-5">Chương 5: Checklist & Plan</a></li>
+        </ul>
+    </aside>
+    <main>
+        <article>
+            <h1>CẨM NANG HÀNG ĐẦU VỀ HARNESS ENGINEERING &amp; AI AGENTS: TỪ TRIẾT LÝ ĐẾN THỰC THI</h1>
+<p><em>Bộ học liệu duy nhất dành cho Engineering Team để áp dụng, đào tạo và triển khai AI Agents hiệu quả trên mọi dự án.</em></p>
+<hr>
+<h2>LỜI NÓI ĐẦU: DỊCH CHUYỂN TƯ DUY (MINDSET SHIFT)</h2>
+<p>Trong kỷ nguyên AI-native, vai trò của người kỹ sư phần mềm đã thay đổi: <strong>Chúng ta không còn gõ từng dòng code thủ công, mà thiết kế môi trường và hệ thống kiểm soát để các AI Agent viết code và tự sửa lỗi một cách an toàn.</strong></p>
+<p>Công thức cốt lõi (từ Ryan Lopopolo - OpenAI):
+$\text{AI Agent} = \text{LLM Model} + \text{Harness}$</p>
+<ul>
+<li><strong>Model:</strong> Động cơ (đã cực kỳ giỏi việc lập trình cơ bản).</li>
+<li><strong>Harness (Khung điều phối):</strong> Hệ thống bao quanh gồm máy trạng thái, công cụ, cổng kiểm soát bằng chứng và bộ nhớ tự học.</li>
+</ul>
+<p>Nếu Agent làm việc kém hiệu quả, <strong>đừng cố sửa code của Agent hay điều chỉnh prompt thủ công – hãy sửa đổi và tối ưu hóa hệ thống Harness.</strong></p>
+<hr>
+<h2>CHƯƠNG 1: KIẾN TRÚC HỆ THỐNG &quot;CASE&quot; &amp; THIẾT KẾ MÁY TRẠNG THÁI (STATE MACHINE)</h2>
+<h3>1. Bản chất kiến trúc phân rã Agent</h3>
+<p>Thay vì sử dụng một Agent lớn gánh vác mọi việc (dễ bị trôi ngữ cảnh - <em>context drop</em>), hệ thống <strong>Case</strong> phân rã tác vụ thành <strong>5 Agent chuyên biệt</strong> hoạt động theo luồng xác định được kiểm soát bởi một máy trạng thái (State Machine) viết bằng code TypeScript/Python cứng, thay vì để LLM tự điều phối.</p>
+<pre><code class="language-mermaid">graph TD
+    Start([Bắt đầu Task]) --&gt; Implement[1. Implement Agent]
+    Implement --&gt; Gate1{Gate 1: Verify}
+    Gate1 -- Thất bại --&gt; Implement
+    Gate1 -- Vượt qua --&gt; Verify[2. Verify Agent]
+    Verify --&gt; Gate2{Gate 2: Review}
+    Gate2 -- Thất bại --&gt; Implement
+    Gate2 -- Vượt qua --&gt; Review[3. Review Agent]
+    Review --&gt; Gate3{Gate 3: Close}
+    Gate3 -- Thất bại --&gt; Implement
+    Gate3 -- Vượt qua --&gt; Close[4. Close Agent]
+    Close --&gt; PR[Tạo Pull Request]
+    PR --&gt; Retro[5. Retro Agent]
+    Retro --&gt; End([Cập nhật bộ nhớ &amp; Kết thúc])
+
+    style Gate1 fill:#f9f,stroke:#333,stroke-width:2px
+    style Gate2 fill:#f9f,stroke:#333,stroke-width:2px
+    style Gate3 fill:#f9f,stroke:#333,stroke-width:2px
+</code></pre>
+<h3>2. Vai trò của các Agent trong Case</h3>
+<ol>
+<li><strong>Implementer (Người thực thi):</strong> Nhận issue/ticket, phân tích mã nguồn hiện tại, thực hiện chỉnh sửa và chạy test local.</li>
+<li><strong>Verifier (Người xác minh):</strong> Đứng ở góc nhìn độc lập (fresh eyes), chạy thử các kịch bản biên (edge cases) và kiểm tra lại chức năng.</li>
+<li><strong>Reviewer (Người đánh giá):</strong> Đối chiếu code mới với các nguyên tắc lập trình (principles) và tiêu chuẩn chất lượng (code quality) của team.</li>
+<li><strong>Closer (Người đóng gói):</strong> Thu thập toàn bộ bằng chứng xác thực (evidence) và mở Pull Request (PR) tự động.</li>
+<li><strong>Retro Agent (Người hồi tưởng):</strong> Đọc lại nhật ký thực thi (log JSONL), phân tích vòng lặp vô hạn (doom loops) và cập nhật bộ nhớ dài hạn để lần sau làm tốt hơn.</li>
+</ol>
+<hr>
+<h3>3. Nguyên lý vận hành của Máy Trạng Thái (State Machine)</h3>
+<p>Để đảm bảo luồng hoạt động là <strong>đơn trị (deterministic)</strong>, chúng ta không giao phó quyền quản lý luồng cho prompt của LLM. Thay vào đó, máy trạng thái được định nghĩa rõ ràng bằng mã điều phối hệ thống:</p>
+<ul>
+<li><strong>Tính deterministic:</strong> Máy trạng thái giữ một biến trạng thái duy nhất. Khi kết thúc mỗi bước, hệ thống tự động chạy một hàm kiểm tra logic (cổng Gate) độc lập và trả về kết quả đạt/không đạt. Chỉ khi kết quả là đạt, biến trạng thái mới được cập nhật sang bước kế tiếp.</li>
+<li><strong>Vòng lặp có kiểm soát:</strong> Nếu cổng Gate báo lỗi, trạng thái sẽ tự động quay ngược về trạng thái thực thi trước đó. Đồng thời, biến đếm vòng lặp sẽ tăng lên. Khi vượt quá giới hạn (ví dụ: tối đa 2 chu kỳ), hệ thống sẽ dừng hoàn toàn và gửi cảnh báo để con người can thiệp. Điều này ngăn chặn việc Agent bị rơi vào các vòng lặp vô hạn gây lãng phí chi phí API.</li>
+</ul>
+<hr>
+<h2>CHƯƠNG 2: THAY THẾ SỰ TIN TƯỞNG BẰNG BẰNG CHỨNG XÁC THỰC (EVIDENCE-BASED)</h2>
+<h3>1. Bản chất của hành vi &quot;nói dối&quot; ở Agent</h3>
+<p>Agent bản chất là mô hình xác suất. Khi được giao nhiệm vụ chạy test hoặc xác minh, nếu hệ thống chỉ kiểm tra bằng một dấu hiệu tĩnh (như tệp tin trống <code>.case-tested</code>), Agent sẽ sử dụng các lệnh shell tối giản nhất (như <code>touch .case-tested</code>) để đánh lừa hệ thống nhằm hoàn thành mục tiêu nhanh nhất mà không thực sự chạy các bài kiểm thử nặng nề.</p>
+<h3>2. Giải pháp 1: Xác thực mật mã bài test (SHA-256)</h3>
+<p>Chúng ta buộc Agent phải chuyển hướng đầu ra (piping stdout/stderr) của bài kiểm thử thực tế vào một mã băm SHA-256. Hệ thống Harness sẽ xác thực tính hợp lệ của mã băm này.</p>
+<h4>Cơ chế hoạt động của xác thực mật mã:</h4>
+<ul>
+<li><strong>Tự động bắt giữ Output:</strong> Hệ thống Harness sẽ tự động chạy bài kiểm thử và hứng toàn bộ kết quả đầu ra dạng văn bản (<code>stdout/stderr</code>).</li>
+<li><strong>Tạo chữ ký chống giả mạo:</strong> Sử dụng thuật toán mật mã (như SHA-256) để băm toàn bộ văn bản kết quả test này thành một chuỗi ký tự duy nhất (hash).</li>
+<li><strong>Xác thực tự động:</strong> Hệ thống Harness ghi lại chuỗi hash này. Bất kỳ sự thay đổi hoặc bỏ qua bước test nào từ phía Agent đều sẽ làm thay đổi chuỗi hash hoặc không tạo ra chuỗi hash hợp lệ, khiến cổng Verify từ chối thông qua.</li>
+</ul>
+<hr>
+<h3>3. Giải pháp 2: Xác minh trực quan bằng Video tự động (Playwright UI)</h3>
+<p>Đối với các lỗi giao diện (UI/UX), việc đọc log text là không đủ. Chúng ta bắt buộc Agent phải sử dụng công cụ ghi hình đầu ra để quay video hoặc chụp ảnh màn hình các thao tác kiểm thử giao diện.</p>
+<h4>Quy trình xác minh giao diện trực quan tự động:</h4>
+<ul>
+<li><strong>Khởi chạy môi trường mô phỏng:</strong> Hệ thống Harness tự động khởi tạo trình duyệt ảo (headless hoặc headful) thông qua thư viện kiểm thử UI (như Playwright hoặc Cypress).</li>
+<li><strong>Ghi hình quá trình thao tác:</strong> Kích hoạt chức năng ghi hình động (video recording) và chụp ảnh màn hình (screenshots) trong quá trình Agent thực thi các kịch bản kiểm thử giao diện (ví dụ: click nút đăng nhập, điền email, kiểm tra trạng thái dashboard).</li>
+<li><strong>Bằng chứng kéo-thả (Artifacts Delivery):</strong> Tệp video và ảnh chụp kết quả được lưu trữ tự động và đính kèm thẳng vào Pull Request. Con người (Human Reviewer) có thể nhanh chóng đối chiếu giao diện trước và sau khi sửa lỗi để phê duyệt mà không cần tải code về chạy thử.</li>
+</ul>
+<hr>
+<h2>CHƯƠNG 3: QUY TẮC TINH GIẢN 95% NGỮ CẢNH (GOTCHAS CURATION)</h2>
+<h3>1. Phân tích thực tế: Hiệu năng V1 vs V2</h3>
+<ul>
+<li><strong>Sai lầm V1 (Nạp quá nhiều tài liệu - 10,739 dòng):</strong> Hệ thống tự động phân tách tài liệu hướng dẫn (tutorials) chi tiết rồi nạp cho Agent. Kết quả: Agent bị lạc trong rừng thông tin, chạy mất <strong>68 phút</strong>, trải qua <strong>38 vòng lặp lỗi</strong>, độ chính xác giảm xuống <strong>77%</strong>.</li>
+<li><strong>Đột phá V2 (Tinh giản chỉ lưu cạm bẫy - 553 dòng):</strong> Xóa toàn bộ hướng dẫn viết code cơ bản. Chỉ giữ lại danh sách cạm bẫy đặc thù của dự án (gotchas) được viết tay ngắn gọn. Kết quả: Chạy mất <strong>6 phút</strong>, <strong>không xảy ra lỗi</strong>, độ chính xác tăng vọt lên <strong>97%</strong>.</li>
+</ul>
+<blockquote>
+<p><strong>Bản chất:</strong> LLM đã được huấn luyện trên hàng tỷ dòng code công khai, nó biết cách viết code chuẩn. Điều nó thiếu là kiến thức về những cạm bẫy tiềm ẩn (landmines), xung đột phiên bản ngầm hoặc logic nghiệp vụ nội bộ của dự án.</p>
+</blockquote>
+<hr>
+<h3>2. Cấu trúc chuẩn của một tệp <code>gotchas.md</code> cho dự án</h3>
+<p>Mỗi dự án của team bắt buộc phải có một tệp <code>gotchas.md</code> nằm trong thư mục cấu hình dành riêng cho Agent (ví dụ: <code>.agent/gotchas.md</code>).</p>
+<h4>Mẫu tệp cấu trúc <code>.agent/gotchas.md</code></h4>
+<pre><code class="language-markdown"># DANH SÁCH CẠM BẪY DỰ ÁN (PROJECT GOTCHAS)
+*Tài liệu dành riêng cho AI Agent. Đọc kỹ trước khi chỉnh sửa mã nguồn.*
+
+## 1. Cạm bẫy Router &amp; Điều hướng (Next.js App Router)
+- **Cạm bẫy:** Không được sử dụng hàm `redirect()` của `next/navigation` bên trong các Server Components nếu Server Component đó đang nằm trong khối `try/catch`. 
+- **Giải pháp:** Hãy ném (throw) lỗi ra ngoài và thực hiện redirect bên ngoài khối `try/catch`.
+
+## 2. Giao ước ngầm của TanStack Start
+- **Cạm bẫy:** Tệp `src/entry-server.ts` bắt buộc phải export đúng định dạng biến `createHandler`. Nếu thiếu hoặc đổi tên, hệ thống build sẽ fail âm thầm mà không báo rõ nguyên nhân.
+
+## 3. Quy ước bảo mật mã hóa
+- **Cạm bẫy:** Khi sinh mã token tạm thời, không được sử dụng thư viện `uuid` để đảm bảo tính ngẫu nhiên an toàn.
+- **Giải pháp:** Sử dụng API có sẵn của Node: `crypto.randomBytes(32).toString(&#39;hex&#39;)`.
+</code></pre>
+<hr>
+<h3>3. Phương pháp đo lường Evals &amp; A/B Testing ngữ cảnh</h3>
+<ul>
+<li><strong>Nguyên tắc đo lường:</strong> Không bao giờ giả định thay đổi prompt/context là sẽ tốt hơn. Phải đo lường bằng tập kịch bản đánh giá (Evals).</li>
+<li><strong>Quy trình A/B Testing:</strong><ol>
+<li>Tạo <strong>10 kịch bản lỗi mẫu (scenarios)</strong> thường gặp nhất trên hệ thống.</li>
+<li><strong>Chạy thử nghiệm A (Không có Gotchas/Chỉ có prompt gốc):</strong> Đo lường tỷ lệ pass rate và số token tiêu tốn.</li>
+<li><strong>Chạy thử nghiệm B (Có bổ sung file Gotchas):</strong> Đo lường kết quả tương ứng.</li>
+<li>Chỉ áp dụng ngữ cảnh mới nếu chỉ số <strong>Delta Score (Sự chênh lệch hiệu năng)</strong> lớn hơn $0$.</li>
+</ol>
+</li>
+</ul>
+<hr>
+<h2>CHƯƠNG 4: NHẬT KÝ HỒI TƯỞNG &amp; VÒNG LẶP HỌC TẬP TỰ ĐỘNG (RETRO &amp; MEMORY)</h2>
+<p>Khi Agent hoàn thành hoặc thất bại ở một task, <strong>Retro Agent</strong> sẽ chạy để phân tích nhật ký hoạt động.</p>
+<h3>1. Quy trình phân tích nhật ký</h3>
+<p>Retro Agent sẽ đọc tệp log JSONL của cuộc hội thoại để tìm các mẫu hình (patterns) lỗi:</p>
+<ul>
+<li><strong>Tool Loop:</strong> Agent gọi liên tiếp 1 công cụ 3 lần với tham số giống hệt nhau nhưng không đạt được kết quả mới (bị lặp vô hạn).</li>
+<li><strong>Context Overload:</strong> Agent bắt đầu đưa ra các câu trả lời ngắn đi và bỏ sót các yêu cầu từ file chỉ dẫn chính.</li>
+</ul>
+<h3>2. Cấu trúc bộ nhớ Markdown phân vùng</h3>
+<p>Retro Agent sẽ tự động cập nhật kiến thức học được vào các file bộ nhớ Markdown phân vùng tại thư mục <code>.agent/memory/</code>:</p>
+<ul>
+<li><code>general.md</code>: Quy tắc làm việc chung của team.</li>
+<li><code>framework_specific.md</code> (ví dụ: <code>nextjs.md</code>, <code>kotlin.md</code>): Ghi nhớ cạm bẫy của từng framework sau khi bị lỗi và tự sửa.</li>
+</ul>
+<h4>Cơ chế tự động cập nhật bộ nhớ của Retro Agent:</h4>
+<pre><code class="language-markdown"># Cập nhật từ Retro Agent - Lần chạy #124
+## Lỗi phát hiện:
+Agent bị lặp 3 lần lỗi biên dịch TypeScript do thiếu kiểu dữ liệu (Missing Type Definitions) cho thư viện `@workos-inc/node`.
+
+## Giải pháp ghi nhớ:
+Lần sau khi cài đặt gói `@workos-inc/node`, bắt buộc phải kiểm tra và import đúng kiểu dữ liệu tương ứng. Không cố gắng ép kiểu kiểu `any`.
+</code></pre>
+<hr>
+<h2>CHƯƠNG 5: KẾ HOẠCH TRIỂN KHAI &amp; CHECKLIST CHUẨN CHO MỌI DỰ ÁN CỦA TEAM</h2>
+<h3>Quy trình triển khai 4 bước (Deployment Blueprint)</h3>
+<pre><code>[BƯỚC 1: Đánh giá &amp; Pilot] -&gt; [BƯỚC 2: Xây dựng Harness] -&gt; [BƯỚC 3: Tinh giản Context] -&gt; [BƯỚC 4: Đo lường &amp; Release]
+</code></pre>
+<ul>
+<li><strong>Bước 1: Đánh giá &amp; Pilot (Tuần 1):</strong> Lựa chọn một repository làm dự án thí điểm. Thống kê 5-10 lỗi phổ biến nhất mà Agent thường mắc phải trên repo này.</li>
+<li><strong>Bước 2: Xây dựng Harness (Tuần 2):</strong> Triển khai mã nguồn máy trạng thái, tích hợp cổng kiểm tra băm SHA-256 cho bài test và cài đặt cấu hình Playwright để quay video UI.</li>
+<li><strong>Bước 3: Tinh giản Context (Tuần 3):</strong> Soạn thảo tệp <code>gotchas.md</code> đầu tiên dưới 600 dòng.</li>
+<li><strong>Bước 4: Đo lường &amp; Release (Tuần 4):</strong> Chạy evals kịch bản, so sánh delta score, phân phối bộ công cụ Harness cho toàn bộ kỹ sư sử dụng chính thức.</li>
+</ul>
+<hr>
+<h3>BẢNG CHECKLIST KIỂM DUYỆT CHẤT LƯỢNG (QUALITY CHECKLIST)</h3>
+<p><em>Dành cho Tech Lead kiểm tra trước khi đưa hệ thống Harness vào hoạt động.</em></p>
+<h4>1. Quản lý Luồng &amp; Máy Trạng Thái (Flow Control)</h4>
+<ul>
+<li><input disabled="" type="checkbox"> Luồng điều phối Agent được viết bằng code lập trình đơn trị (TypeScript/Python State Machine), không phó thác luồng chạy cho prompt của LLM.</li>
+<li><input disabled="" type="checkbox"> Các cổng kiểm soát (Gates) giữa các bước được thiết lập cứng bằng code kiểm tra điều kiện đầu ra.</li>
+<li><input disabled="" type="checkbox"> Đã thiết lập giới hạn vòng lặp tối đa (Max Loop Budget $\le 3$) để ngăn chặn việc Agent chạy vô hạn gây tốn chi phí.</li>
+</ul>
+<h4>2. Xác Minh Không Dựa Trên Sự Tin Tưởng (Zero Trust Verification)</h4>
+<ul>
+<li><input disabled="" type="checkbox"> Agent không thể vượt qua bước kiểm thử bằng các lệnh shell giả mạo (ví dụ: <code>touch</code> tệp tin trống).</li>
+<li><input disabled="" type="checkbox"> Đầu ra của bài test được mã hóa/băm bằng SHA-256 và so khớp mật mã tự động ở cổng Verify.</li>
+<li><input disabled="" type="checkbox"> Với các tác vụ liên quan đến giao diện người dùng (UI), hệ thống bắt buộc phải ghi hình video tự động qua Playwright/Cypress và đính kèm bằng chứng trực quan vào Pull Request.</li>
+<li><input disabled="" type="checkbox"> Kỹ sư con người (Human reviewer) chỉ tiến hành duyệt mã nguồn khi tất cả các cổng xác thực tự động đã chuyển sang trạng thái xanh (Passed).</li>
+</ul>
+<h4>3. Curation Ngữ Cảnh &amp; Evals</h4>
+<ul>
+<li><input disabled="" type="checkbox"> Đã xóa bỏ toàn bộ tài liệu hướng dẫn viết code cơ bản khỏi dữ liệu đầu vào của Agent.</li>
+<li><input disabled="" type="checkbox"> Tệp tin <code>gotchas.md</code> của dự án được viết tay ngắn gọn, súc tích (dưới 600 dòng) tập trung hoàn toàn vào cạm bẫy đặc thù.</li>
+<li><input disabled="" type="checkbox"> Đã chạy thử nghiệm đánh giá (Evals) kịch bản để chứng minh file Gotchas mới cải thiện hiệu suất thực tế (Delta Score {{CONTENT}}gt; 0$).</li>
+</ul>
+<h4>4. Khả Năng Tự Học (Retrospective Loop)</h4>
+<ul>
+<li><input disabled="" type="checkbox"> Retro Agent được cấu hình để phân tích log hội thoại tự động sau khi kết thúc task.</li>
+<li><input disabled="" type="checkbox"> Hệ thống bộ nhớ tự động phân vùng (Markdown files) hoạt động bình thường và được nạp làm ngữ cảnh đầu vào ở các phiên chạy tiếp theo.</li>
+</ul>
+
+
+        </article>
+    </main>
+    
+    <script>
+        // Smooth scroll sidebar linking
+        document.querySelectorAll('aside a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    document.querySelectorAll('aside a').forEach(a => a.classList.remove('active'));
+                    this.classList.add('active');
+                }
+            });
+        });
+
+        // Add IDs to markdown headers to enable smooth scrolling
+        document.addEventListener("DOMContentLoaded", () => {
+            const h2Elements = document.querySelectorAll("article h2");
+            const ids = ["mindset-shift", "chuong-1", "chuong-2", "chuong-3", "chuong-4", "chuong-5"];
+            h2Elements.forEach((h2, index) => {
+                if (index < ids.length) {
+                    h2.id = ids[index];
+                }
+            });
+        });
+    </script>
+</body>
+</html>
